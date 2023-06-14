@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:social_media_app/blocs/newsfeed_bloc.dart';
+import 'package:social_media_app/pages/add_new_post_page.dart';
 import 'package:social_media_app/resources/dimens.dart';
 import 'package:social_media_app/viewitems/news_feed_item_view.dart';
 import 'package:provider/provider.dart';
@@ -12,6 +13,13 @@ class HomePage extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => NewsfeedBloc(),
       child: Scaffold(
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => const AddNewPostPage()));
+          },
+          child: const Icon(Icons.add),
+        ),
         appBar: AppBar(
           centerTitle: false,
           elevation: 0.0,

@@ -29,11 +29,14 @@ class RealTimeDatabaseDataAgentImpl extends SocialDataAgent {
     // });
     List<NewsFeedVO> newsList = [];
     return databaseRef.child(newsFeedPath).onValue.map((event) {
-      List<Object?> data = event.snapshot.value as List;
-
-      for (int i = 1; i < data.length; i++) {
+      newsList.clear();
+      print(event.snapshot.value.runtimeType);
+      // List<Object?> data = event.snapshot.value as List;
+      Map<Object?, Object?> data =
+          event.snapshot.value as Map<Object?, Object?>;
+      for (int i = 1; i < data.entries.length; i++) {
         Map<Object?, Object?> dynamicMap = {};
-        dynamicMap = data[i] as Map<Object?, Object?>;
+        dynamicMap = data.values.elementAt(i) as Map<Object?, Object?>;
         Map<String, dynamic> stringMap = {};
         stringMap = dynamicMap.cast<String, dynamic>();
         Map<String, dynamic> castdata = {};
@@ -44,5 +47,13 @@ class RealTimeDatabaseDataAgentImpl extends SocialDataAgent {
       }
       return newsList;
     });
+  }
+
+  @override
+  Future<void> addNewPost(NewsFeedVO newPost) {
+    return databaseRef
+        .child(newsFeedPath)
+        .child(newPost.id.toString())
+        .set(newPost.toJson());
   }
 }
