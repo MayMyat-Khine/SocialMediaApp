@@ -31,4 +31,19 @@ class SocialModelImpl extends SocialModel {
             'https://upload.wikimedia.org/wikipedia/commons/0/0f/IU_posing_for_Marie_Claire_Korea_March_2022_issue_03.jpg');
     return mDataAgent.addNewPost(newPost);
   }
+
+  @override
+  Future<void> deletePost(String postId) {
+    return mDataAgent.deletePost(postId);
+  }
+
+  @override
+  Stream<NewsFeedVO> getNewsFeedbyId(int newFeedsId) {
+    return mDataAgent.getNewsFeedById(newFeedsId);
+  }
+
+  @override
+  Future<void> editNewPost(NewsFeedVO vo) {
+    return mDataAgent.addNewPost(vo);
+  }
 }

@@ -18,7 +18,7 @@ class AddNewPostPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => AddNewPostBloc(),
+      create: (context) => AddNewPostBloc(newFeedId: newsFeedId),
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
@@ -88,7 +88,6 @@ class AddNewPostPage extends StatelessWidget {
 
 // class PostImageView extends StatelessWidget {
 //   const PostImageView({Key? key}) : super(key: key);
-
 //   @override
 //   Widget build(BuildContext context) {
 //     return Consumer<AddNewPostBloc>(
@@ -186,7 +185,7 @@ class PostButtonView extends StatelessWidget {
             Navigator.pop(context);
           });
         },
-        child: PrimaryButtonView(
+        child: const PrimaryButtonView(
           label: "POST",
           // themeColor: bloc.themeColor,
         ),
@@ -204,17 +203,14 @@ class ProfileImageAndNameView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<AddNewPostBloc>(
       builder: (context, bloc, child) => Row(
-        children: const [
-          ProfileImageView(
-            userProfile:
-                'https://upload.wikimedia.org/wikipedia/commons/0/0f/IU_posing_for_Marie_Claire_Korea_March_2022_issue_03.jpg',
-          ),
-          SizedBox(
+        children: [
+          ProfileImageView(userProfile: bloc.profilePicture),
+          const SizedBox(
             width: MARGIN_MEDIUM_2,
           ),
           Text(
-            "mmk",
-            style: TextStyle(
+            bloc.userName,
+            style: const TextStyle(
               fontSize: TEXT_REGULAR_2X,
               color: Colors.black,
               fontWeight: FontWeight.bold,

@@ -15,6 +15,10 @@ class NewsfeedBloc extends ChangeNotifier {
       }
     });
   }
+  Future<void> deletePost(String postId) {
+    return _mSocialModel.deletePost(postId);
+  }
+
   @override
   void dispose() {
     isDisposed = true;

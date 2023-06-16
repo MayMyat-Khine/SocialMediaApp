@@ -68,6 +68,16 @@ class HomePage extends StatelessWidget {
                 itemBuilder: (context, index) {
                   return NewsFeedItemView(
                     newsfeed: _newsfeedBloc.newsfeedList[index],
+                    onTapDelete: () {
+                      _newsfeedBloc.deletePost(
+                          _newsfeedBloc.newsfeedList[index].id.toString());
+                    },
+                    onTapEdit: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => AddNewPostPage(
+                              newsFeedId:
+                                  _newsfeedBloc.newsfeedList[index].id ?? 0)));
+                    },
                   );
                 },
                 separatorBuilder: (context, index) {
