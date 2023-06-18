@@ -34,7 +34,7 @@ class RealTimeDatabaseDataAgentImpl extends SocialDataAgent {
       // List<Object?> data = event.snapshot.value as List;
       Map<Object?, Object?> data =
           event.snapshot.value as Map<Object?, Object?>;
-      for (int i = 1; i < data.entries.length; i++) {
+      for (int i = 0; i < data.entries.length; i++) {
         Map<Object?, Object?> dynamicMap = {};
         dynamicMap = data.values.elementAt(i) as Map<Object?, Object?>;
         Map<String, dynamic> stringMap = {};

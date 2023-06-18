@@ -82,8 +82,12 @@ class HomePage extends StatelessWidget {
                       //         newsFeedId:
                       //             _newsfeedBloc.newsfeedList[index].id ?? 0)));
 
-                      Navigator.of(context).push(
-                          MaterialPageRoute(builder: (context) => MyWidget()));
+                      Future.delayed(const Duration(milliseconds: 1000))
+                          .then((value) {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => MyWidget()));
+                        // _navigateToEditPostPage(context, newsFeedId);
+                      });
                     },
                   );
                 },
