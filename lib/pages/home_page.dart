@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:social_media_app/blocs/add_new_post_bloc.dart';
 import 'package:social_media_app/blocs/newsfeed_bloc.dart';
 import 'package:social_media_app/pages/add_new_post_page.dart';
+import 'package:social_media_app/pages/test_page.dart';
 import 'package:social_media_app/resources/dimens.dart';
 import 'package:social_media_app/viewitems/news_feed_item_view.dart';
 import 'package:provider/provider.dart';
@@ -73,10 +75,15 @@ class HomePage extends StatelessWidget {
                           _newsfeedBloc.newsfeedList[index].id.toString());
                     },
                     onTapEdit: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => AddNewPostPage(
-                              newsFeedId:
-                                  _newsfeedBloc.newsfeedList[index].id ?? 0)));
+                      // AddNewPostBloc(
+                      //     newFeedId: _newsfeedBloc.newsfeedList[index].id ?? 0);
+                      // Navigator.of(context).push(MaterialPageRoute(
+                      //     builder: (context) => AddNewPostPage(
+                      //         newsFeedId:
+                      //             _newsfeedBloc.newsfeedList[index].id ?? 0)));
+
+                      Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context) => MyWidget()));
                     },
                   );
                 },

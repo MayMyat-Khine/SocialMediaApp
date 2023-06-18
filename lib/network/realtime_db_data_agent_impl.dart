@@ -66,10 +66,14 @@ class RealTimeDatabaseDataAgentImpl extends SocialDataAgent {
   Stream<NewsFeedVO> getNewsFeedById(int newFeedsId) {
     return databaseRef
         .child(newsFeedPath)
-        .child(newsFeedPath.toString())
+        .child(newFeedsId.toString())
         .once()
         .asStream()
         .map((snapShot) {
+      print(NewsFeedVO.fromJson(
+        Map<String, dynamic>.from(
+            snapShot.snapshot.value as Map<Object?, Object?>),
+      ).userName);
       return NewsFeedVO.fromJson(
         Map<String, dynamic>.from(
             snapShot.snapshot.value as Map<Object?, Object?>),
