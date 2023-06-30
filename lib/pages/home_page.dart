@@ -85,7 +85,9 @@ class HomePage extends StatelessWidget {
                       Future.delayed(const Duration(milliseconds: 1000))
                           .then((value) {
                         Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => MyWidget()));
+                            builder: (context) => AddNewPostPage(
+                                newsFeedId:
+                                    _newsfeedBloc.newsfeedList[index].id)));
                         // _navigateToEditPostPage(context, newsFeedId);
                       });
                     },

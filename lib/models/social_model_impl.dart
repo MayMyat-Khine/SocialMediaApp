@@ -13,8 +13,8 @@ class SocialModelImpl extends SocialModel {
 
   SocialModelImpl._internal();
 
-  SocialDataAgent mDataAgent = RealTimeDatabaseDataAgentImpl();
-  // SocialDataAgent mDataAgent = CloudFirestoreDataAgentImpl();
+  // SocialDataAgent mDataAgent = RealTimeDatabaseDataAgentImpl();
+  SocialDataAgent mDataAgent = CloudFirestoreDataAgentImpl();
   @override
   Stream<List<NewsFeedVO>> getNewsFeed() {
     return mDataAgent.getNewsFeed();
