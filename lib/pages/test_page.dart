@@ -8,8 +8,8 @@ class MyWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Text("text data"),
+    return Scaffold(
+      body: Column(children: []),
     );
   }
 }
