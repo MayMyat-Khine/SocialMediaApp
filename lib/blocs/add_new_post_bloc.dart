@@ -1,74 +1,140 @@
-import 'package:flutter/widgets.dart';
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:social_media_app/analytics/firebase_analytics_tracker.dart';
+import 'package:social_media_app/data/models/authentication_model.dart';
+import 'package:social_media_app/data/models/authentication_model_impl.dart';
+import 'package:social_media_app/data/models/social_model.dart';
+import 'package:social_media_app/data/models/social_model_impl.dart';
 import 'package:social_media_app/data/vos/news_feed_vo.dart';
-import 'package:social_media_app/models/social_model.dart';
-import 'package:social_media_app/models/social_model_impl.dart';
+import 'package:social_media_app/data/vos/user_vo.dart';
+import 'package:social_media_app/remote_config/firebase_remote_config.dart';
 
 class AddNewPostBloc extends ChangeNotifier {
   /// State
-  String newPostDescription = '';
+  String newPostDescription = "";
   bool isAddNewPostError = false;
   bool isDisposed = false;
+  bool isLoading = false;
+  UserVO? _loggedInUser;
+
+  Color themeColor = Colors.black;
+
+  /// Image
+  File? chosenImageFile;
+
+  /// For Edit Mode
   bool isInEditMode = false;
-  String userName = '';
-  String profilePicture = '';
-  NewsFeedVO? newsFeed;
+  String userName = "";
+  String profilePicture = "";
+  NewsFeedVO? mNewsFeed;
 
   /// Model
-  SocialModel _mSocialModel = SocialModelImpl();
+  final SocialModel _model = SocialModelImpl();
+  final AuthenticationModel _authenticationModel = AuthenticationModelImpl();
 
-  AddNewPostBloc({int? newFeedId}) {
-    if (newFeedId != null) {
+  /// Remote Configs
+  final FirebaseRemoteConfig _firebaseRemoteConfig = FirebaseRemoteConfig();
+
+  AddNewPostBloc({int? newsFeedId}) {
+    _loggedInUser = _authenticationModel.getLoggedInUser();
+    if (newsFeedId != null) {
       isInEditMode = true;
-      _prepopulateDataForEditMode(newFeedId);
+      _prepopulateDataForEditMode(newsFeedId);
     } else {
-      _prepopulateDataForAddPost();
+      _prepopulateDataForAddNewPost();
     }
-  }
-  void onNewPostTextChangedd(String description) {
-    newPostDescription = description;
+
+    /// Firebase
+    _sendAnalyticsData(addNewPostScreenReached, null);
+    _getRemoteConfigAndChangeTheme();
   }
 
-  Future onTapAddNewPost({int? newFeedId}) {
+  void _getRemoteConfigAndChangeTheme() {
+    themeColor = _firebaseRemoteConfig.getThemeColorFromRemoteConfig();
+    _notifySafely();
+  }
+
+  void _prepopulateDataForAddNewPost() {
+    userName = _loggedInUser?.userName ?? "";
+    profilePicture =
+        "https://images.pexels.com/photos/771742/pexels-photo-771742.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500";
+    _notifySafely();
+  }
+
+  void _prepopulateDataForEditMode(int newsFeedId) {
+    _model.getNewsFeedById(newsFeedId).listen((newsFeed) {
+      userName = newsFeed.userName ?? "";
+      profilePicture = newsFeed.profilePicture ?? "";
+      newPostDescription = newsFeed.description ?? "";
+      mNewsFeed = newsFeed;
+      _notifySafely();
+    });
+  }
+
+  void onImageChosen(File imageFile) {
+    chosenImageFile = imageFile;
+    _notifySafely();
+  }
+
+  void onTapDeleteImage() {
+    chosenImageFile = null;
+    _notifySafely();
+  }
+
+  void onNewPostTextChanged(String newPostDescription) {
+    this.newPostDescription = newPostDescription;
+  }
+
+  Future onTapAddNewPost() {
     if (newPostDescription.isEmpty) {
       isAddNewPostError = true;
-      if (!isDisposed) {
-        notifyListeners();
-      }
-      return Future.error("error");
+      _notifySafely();
+      return Future.error("Error");
     } else {
+      isLoading = true;
+      _notifySafely();
       isAddNewPostError = false;
       if (isInEditMode) {
-        return _editNewsFeedPost();
+        return _editNewsFeedPost().then((value) {
+          isLoading = false;
+          _notifySafely();
+          _sendAnalyticsData(
+              editPostAction, {postId: mNewsFeed?.id.toString() ?? ""});
+        });
       } else {
-        return _mSocialModel.addNewPost(newPostDescription);
+        return _createNewNewsFeedPost().then((value) {
+          isLoading = false;
+          _notifySafely();
+          _sendAnalyticsData(addNewPostAction, null);
+        });
       }
+    }
+  }
+
+  void _notifySafely() {
+    if (!isDisposed) {
+      notifyListeners();
     }
   }
 
   Future<dynamic> _editNewsFeedPost() {
-    newsFeed?.description = newPostDescription;
-    if (newsFeed != null) {
-      return _mSocialModel.editNewPost(newsFeed!);
+    mNewsFeed?.description = newPostDescription;
+    if (mNewsFeed != null) {
+      return _model.editPost(mNewsFeed!, chosenImageFile);
     } else {
-      return Future.error("error");
+      return Future.error("Error");
     }
   }
 
-  void _prepopulateDataForAddPost() {
-    userName = "Mmk";
-    profilePicture =
-        "https://upload.wikimedia.org/wikipedia/commons/0/0f/IU_posing_for_Marie_Claire_Korea_March_2022_issue_03.jpg";
-    notifyListeners();
+  Future<void> _createNewNewsFeedPost() {
+    return _model.addNewPost(newPostDescription, chosenImageFile);
   }
 
-  void _prepopulateDataForEditMode(int newFeedId) {
-    _mSocialModel.getNewsFeedbyId(newFeedId).listen((event) {
-      userName = event.userName ?? "";
-      profilePicture = event.profilePicture ?? "";
-      newPostDescription = event.description ?? "";
-      newsFeed = event;
-      notifyListeners();
-    });
+  /// Analytics
+  void _sendAnalyticsData(String name, Map<String, String>? parameters) async {
+    await FirebaseAnalyticsTracker().logEvent(name, parameters);
   }
 
   @override
