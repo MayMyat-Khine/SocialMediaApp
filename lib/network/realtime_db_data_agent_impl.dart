@@ -1,9 +1,12 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:social_media_app/data/vos/news_feed_vo.dart';
+import 'package:social_media_app/data/vos/user_vo.dart';
 import 'package:social_media_app/network/data_agent.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 // Database Paths
 const newsFeedPath = 'newsfeed';
+const usersPath = "users";
 
 class RealTimeDatabaseDataAgentImpl extends SocialDataAgent {
   static final RealTimeDatabaseDataAgentImpl _singleton =
@@ -17,6 +20,10 @@ class RealTimeDatabaseDataAgentImpl extends SocialDataAgent {
 
   /// Database
   var databaseRef = FirebaseDatabase.instance.ref();
+
+  /// Auth
+  FirebaseAuth auth = FirebaseAuth.instance;
+
   @override
   Stream<List<NewsFeedVO>> getNewsFeed() {
     //
@@ -79,5 +86,49 @@ class RealTimeDatabaseDataAgentImpl extends SocialDataAgent {
             snapShot.snapshot.value as Map<Object?, Object?>),
       );
     });
+  }
+
+  @override
+  Future registerNewUser(UserVO newUser) {
+    return auth
+        .createUserWithEmailAndPassword(
+            email: newUser.email ?? "", password: newUser.password ?? "")
+        .then((credential) =>
+            credential.user?..updateDisplayName(newUser.userName))
+        .then((user) {
+      newUser.id = user?.uid ?? "";
+      _addNewUser(newUser);
+    });
+  }
+
+  Future<void> _addNewUser(UserVO newUser) {
+    return databaseRef
+        .child(usersPath)
+        .child(newUser.id.toString())
+        .set(newUser.toJson());
+  }
+
+  @override
+  Future login(String email, String password) {
+    return auth.signInWithEmailAndPassword(email: email, password: password);
+  }
+
+  @override
+  bool isLoggedIn() {
+    return auth.currentUser != null;
+  }
+
+  @override
+  UserVO getLoggedInUser() {
+    return UserVO(
+      id: auth.currentUser?.uid,
+      email: auth.currentUser?.email,
+      userName: auth.currentUser?.displayName,
+    );
+  }
+
+  @override
+  Future logOut() {
+    return auth.signOut();
   }
 }

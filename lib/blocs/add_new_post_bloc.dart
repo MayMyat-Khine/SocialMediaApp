@@ -1,5 +1,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:social_media_app/data/vos/news_feed_vo.dart';
+import 'package:social_media_app/data/vos/user_vo.dart';
+import 'package:social_media_app/models/auth_model.dart';
+import 'package:social_media_app/models/auth_model_impl.dart';
 import 'package:social_media_app/models/social_model.dart';
 import 'package:social_media_app/models/social_model_impl.dart';
 
@@ -12,11 +15,14 @@ class AddNewPostBloc extends ChangeNotifier {
   String userName = '';
   String profilePicture = '';
   NewsFeedVO? newsFeed;
+  UserVO? _loggedInUser;
 
   /// Model
   SocialModel _mSocialModel = SocialModelImpl();
+  AuthenticationModel _mAuthModel = AuthenticationModelImpl();
 
   AddNewPostBloc({int? newFeedId}) {
+    _loggedInUser = _mAuthModel.getLoggedInUser();
     if (newFeedId != null) {
       isInEditMode = true;
       _prepopulateDataForEditMode(newFeedId);
@@ -55,7 +61,7 @@ class AddNewPostBloc extends ChangeNotifier {
   }
 
   void _prepopulateDataForAddPost() {
-    userName = "Mmk";
+    userName = _loggedInUser?.userName ?? "";
     profilePicture =
         "https://upload.wikimedia.org/wikipedia/commons/0/0f/IU_posing_for_Marie_Claire_Korea_March_2022_issue_03.jpg";
     notifyListeners();
