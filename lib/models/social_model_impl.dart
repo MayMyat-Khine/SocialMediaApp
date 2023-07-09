@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:social_media_app/data/vos/news_feed_vo.dart';
 import 'package:social_media_app/models/auth_model_impl.dart';
 import 'package:social_media_app/models/social_model.dart';
@@ -24,17 +26,29 @@ class SocialModelImpl extends SocialModel {
   }
 
   @override
-  Future<void> addNewPost(String description) {
-    var currentMilliseconds = DateTime.now().millisecond;
+  Future<void> addNewPost(String description, File? imageFile) {
+    if (imageFile != null) {
+      return mDataAgent
+          .uploadFileToFirebase(imageFile)
+          .then((downloadUrl) => craftNewsFeedVO(description, downloadUrl))
+          .then((newPost) => mDataAgent.addNewPost(newPost));
+    } else {
+      return craftNewsFeedVO(description, "")
+          .then((newPost) => mDataAgent.addNewPost(newPost));
+    }
+  }
+
+  Future<NewsFeedVO> craftNewsFeedVO(String description, String imageUrl) {
+    var currentMilliseconds = DateTime.now().millisecondsSinceEpoch;
     var newPost = NewsFeedVO(
-        id: currentMilliseconds,
-        userName: _authModel.getLoggedInUser().userName,
-        postImage:
-            "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Retriever_in_water.jpg/168px-Retriever_in_water.jpg",
-        description: description,
-        profilePicture:
-            'https://upload.wikimedia.org/wikipedia/commons/0/0f/IU_posing_for_Marie_Claire_Korea_March_2022_issue_03.jpg');
-    return mDataAgent.addNewPost(newPost);
+      id: currentMilliseconds,
+      userName: _authModel.getLoggedInUser().userName,
+      postImage: imageUrl,
+      description: description,
+      profilePicture:
+          'https://upload.wikimedia.org/wikipedia/commons/0/0f/IU_posing_for_Marie_Claire_Korea_March_2022_issue_03.jpg',
+    );
+    return Future.value(newPost);
   }
 
   @override

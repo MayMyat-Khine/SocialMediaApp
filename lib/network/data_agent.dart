@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:social_media_app/data/vos/news_feed_vo.dart';
 import 'package:social_media_app/data/vos/user_vo.dart';
 
@@ -6,6 +8,7 @@ abstract class SocialDataAgent {
   Stream<NewsFeedVO> getNewsFeedById(int newFeedsId);
   Future<void> addNewPost(NewsFeedVO newPost);
   Future<void> deletePost(String postId);
+  Future<String> uploadFileToFirebase(File image);
 
   /// Authentication
   Future registerNewUser(UserVO newUser);

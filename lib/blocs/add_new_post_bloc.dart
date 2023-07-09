@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/widgets.dart';
 import 'package:social_media_app/data/vos/news_feed_vo.dart';
 import 'package:social_media_app/data/vos/user_vo.dart';
@@ -16,6 +18,7 @@ class AddNewPostBloc extends ChangeNotifier {
   String profilePicture = '';
   NewsFeedVO? newsFeed;
   UserVO? _loggedInUser;
+  File? chosenImageFile;
 
   /// Model
   SocialModel _mSocialModel = SocialModelImpl();
@@ -46,9 +49,13 @@ class AddNewPostBloc extends ChangeNotifier {
       if (isInEditMode) {
         return _editNewsFeedPost();
       } else {
-        return _mSocialModel.addNewPost(newPostDescription);
+        return _createNewNewsFeedPost();
       }
     }
+  }
+
+  Future<void> _createNewNewsFeedPost() {
+    return _mSocialModel.addNewPost(newPostDescription, chosenImageFile);
   }
 
   Future<dynamic> _editNewsFeedPost() {
