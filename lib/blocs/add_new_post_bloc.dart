@@ -58,6 +58,16 @@ class AddNewPostBloc extends ChangeNotifier {
     return _mSocialModel.addNewPost(newPostDescription, chosenImageFile);
   }
 
+  void onImageChosen(File imageFile) {
+    chosenImageFile = imageFile;
+    notifyListeners();
+  }
+
+  void onTapDeleteImage() {
+    chosenImageFile = null;
+    notifyListeners();
+  }
+
   Future<dynamic> _editNewsFeedPost() {
     newsFeed?.description = newPostDescription;
     if (newsFeed != null) {

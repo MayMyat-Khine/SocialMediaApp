@@ -6,6 +6,7 @@ import 'package:social_media_app/blocs/add_new_post_bloc.dart';
 import 'package:social_media_app/resources/dimens.dart';
 import 'package:social_media_app/viewitems/news_feed_item_view.dart';
 import 'package:social_media_app/widgets/primary_buttom_view.dart';
+import 'package:image_picker/image_picker.dart';
 
 class AddNewPostPage extends StatelessWidget {
   final int? newsFeedId;
@@ -69,10 +70,10 @@ class AddNewPostPage extends StatelessWidget {
                 SizedBox(
                   height: MARGIN_MEDIUM_2,
                 ),
-                // PostImageView(),
-                // SizedBox(
-                //   height: MARGIN_LARGE,
-                // ),
+                PostImageView(),
+                SizedBox(
+                  height: MARGIN_LARGE,
+                ),
                 PostButtonView(),
                 SizedBox(
                   height: MARGIN_XLARGE,
@@ -86,67 +87,67 @@ class AddNewPostPage extends StatelessWidget {
   }
 }
 
-// class PostImageView extends StatelessWidget {
-//   const PostImageView({Key? key}) : super(key: key);
-//   @override
-//   Widget build(BuildContext context) {
-//     return Consumer<AddNewPostBloc>(
-//       builder: (context, bloc, child) => Container(
-//         padding: const EdgeInsets.all(MARGIN_MEDIUM),
-//         decoration: BoxDecoration(
-//           borderRadius: BorderRadius.circular(MARGIN_MEDIUM),
-//           border: Border.all(color: Colors.black, width: 1),
-//         ),
-//         child: Stack(
-//           children: [
-//             Container(
-//               child: (bloc.chosenImageFile == null)
-//                   ? GestureDetector(
-//                       child: SizedBox(
-//                         height: 300,
-//                         child: Image.network(
-//                           "https://socialistmodernism.com/wp-content/uploads/2017/07/placeholder-image.png?w=640",
-//                         ),
-//                       ),
-//                       onTap: () async {
-//                         // final ImagePicker _picker = ImagePicker();
-//                         // // Pick an image
-//                         // final XFile? image = await _picker.pickImage(
-//                         //     source: ImageSource.gallery);
-//                         // if (image != null) {
-//                         //   bloc.onImageChosen(File(image.path));
-//                         // }
-//                       },
-//                     )
-//                   : SizedBox(
-//                       height: 300,
-//                       child: Image.file(
-//                         bloc.chosenImageFile ?? File(""),
-//                         fit: BoxFit.cover,
-//                       ),
-//                     ),
-//             ),
-//             Align(
-//               alignment: Alignment.topRight,
-//               child: Visibility(
-//                 visible: bloc.chosenImageFile != null,
-//                 child: GestureDetector(
-//                   onTap: () {
-//                     bloc.onTapDeleteImage();
-//                   },
-//                   child: const Icon(
-//                     Icons.delete_rounded,
-//                     color: Colors.red,
-//                   ),
-//                 ),
-//               ),
-//             )
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
+class PostImageView extends StatelessWidget {
+  const PostImageView({Key? key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<AddNewPostBloc>(
+      builder: (context, bloc, child) => Container(
+        padding: const EdgeInsets.all(MARGIN_MEDIUM),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(MARGIN_MEDIUM),
+          border: Border.all(color: Colors.black, width: 1),
+        ),
+        child: Stack(
+          children: [
+            Container(
+              child: (bloc.chosenImageFile == null)
+                  ? GestureDetector(
+                      child: SizedBox(
+                        height: 300,
+                        child: Image.network(
+                          "https://socialistmodernism.com/wp-content/uploads/2017/07/placeholder-image.png?w=640",
+                        ),
+                      ),
+                      onTap: () async {
+                        final ImagePicker _picker = ImagePicker();
+                        // Pick an image
+                        final XFile? image = await _picker.pickImage(
+                            source: ImageSource.gallery);
+                        if (image != null) {
+                          bloc.onImageChosen(File(image.path));
+                        }
+                      },
+                    )
+                  : SizedBox(
+                      height: 300,
+                      child: Image.file(
+                        bloc.chosenImageFile ?? File(""),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+            ),
+            Align(
+              alignment: Alignment.topRight,
+              child: Visibility(
+                visible: bloc.chosenImageFile != null,
+                child: GestureDetector(
+                  onTap: () {
+                    bloc.onTapDeleteImage();
+                  },
+                  child: const Icon(
+                    Icons.delete_rounded,
+                    color: Colors.red,
+                  ),
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
 
 class PostDescriptionErrorView extends StatelessWidget {
   const PostDescriptionErrorView({
