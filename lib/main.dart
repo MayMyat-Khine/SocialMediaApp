@@ -1,14 +1,15 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:social_media_app/fcm/fcm_service.dart';
 import 'package:social_media_app/models/auth_model_impl.dart';
-import 'package:social_media_app/network/realtime_db_data_agent_impl.dart';
 import 'package:social_media_app/pages/home_page.dart';
 import 'package:social_media_app/pages/login_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  FCMService().listenForMessages();
   // RealTimeDatabaseDataAgentImpl db = RealTimeDatabaseDataAgentImpl();
   // db.getNewsFeed().listen((event) {
   //   print(event);

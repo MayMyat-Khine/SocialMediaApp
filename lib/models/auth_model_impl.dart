@@ -2,6 +2,7 @@ import 'package:social_media_app/data/vos/user_vo.dart';
 import 'package:social_media_app/models/auth_model.dart';
 import 'package:social_media_app/network/data_agent.dart';
 import 'package:social_media_app/network/realtime_db_data_agent_impl.dart';
+import 'package:social_media_app/network/cloud_firestore_data_agent_impl.dart';
 
 class AuthenticationModelImpl extends AuthenticationModel {
   static final AuthenticationModelImpl _singleton =
@@ -13,9 +14,9 @@ class AuthenticationModelImpl extends AuthenticationModel {
 
   AuthenticationModelImpl._internal();
 
-  SocialDataAgent mDataAgent = RealTimeDatabaseDataAgentImpl();
+  // SocialDataAgent mDataAgent = RealTimeDatabaseDataAgentImpl();
 
-  //SocialDataAgent mDataAgent = CloudFireStoreDataAgentImpl();
+  SocialDataAgent mDataAgent = CloudFirestoreDataAgentImpl();
 
   @override
   Future<void> login(String email, String password) {
