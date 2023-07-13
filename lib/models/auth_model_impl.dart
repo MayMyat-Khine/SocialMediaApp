@@ -14,9 +14,9 @@ class AuthenticationModelImpl extends AuthenticationModel {
 
   AuthenticationModelImpl._internal();
 
-  // SocialDataAgent mDataAgent = RealTimeDatabaseDataAgentImpl();
+  SocialDataAgent mDataAgent = RealTimeDatabaseDataAgentImpl();
 
-  SocialDataAgent mDataAgent = CloudFirestoreDataAgentImpl();
+  // SocialDataAgent mDataAgent = CloudFirestoreDataAgentImpl();
 
   @override
   Future<void> login(String email, String password) {
