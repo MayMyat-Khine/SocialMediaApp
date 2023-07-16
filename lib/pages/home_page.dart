@@ -1,3 +1,4 @@
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:social_media_app/blocs/add_new_post_bloc.dart';
 import 'package:social_media_app/blocs/newsfeed_bloc.dart';
@@ -19,6 +20,8 @@ class HomePage extends StatelessWidget {
       child: Scaffold(
         floatingActionButton: FloatingActionButton(
           onPressed: () {
+            // throw Exception();
+            // FirebaseCrashlytics.instance.crash();
             Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => const AddNewPostPage()));
           },

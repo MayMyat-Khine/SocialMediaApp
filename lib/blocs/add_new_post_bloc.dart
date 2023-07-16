@@ -1,12 +1,15 @@
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:social_media_app/analytics/firabase_analytics.dart';
 import 'package:social_media_app/data/vos/news_feed_vo.dart';
 import 'package:social_media_app/data/vos/user_vo.dart';
 import 'package:social_media_app/models/auth_model.dart';
 import 'package:social_media_app/models/auth_model_impl.dart';
 import 'package:social_media_app/models/social_model.dart';
 import 'package:social_media_app/models/social_model_impl.dart';
+import 'package:social_media_app/remote_config/remote_config_firebase.dart';
 
 class AddNewPostBloc extends ChangeNotifier {
   /// State
@@ -24,6 +27,12 @@ class AddNewPostBloc extends ChangeNotifier {
   SocialModel _mSocialModel = SocialModelImpl();
   AuthenticationModel _mAuthModel = AuthenticationModelImpl();
 
+  /// Remote Configs
+  final FirebaseRemoteConfiguration _firebaseRemoteConfig =
+      FirebaseRemoteConfiguration();
+
+  Color themeColor = Colors.black;
+
   AddNewPostBloc({int? newFeedId}) {
     _loggedInUser = _mAuthModel.getLoggedInUser();
     if (newFeedId != null) {
@@ -32,7 +41,20 @@ class AddNewPostBloc extends ChangeNotifier {
     } else {
       _prepopulateDataForAddPost();
     }
+    _sendAnalyticsData(addNewPostScreenReached, null);
+    _getRemoteConfigAndChangeTheme();
   }
+
+  void _getRemoteConfigAndChangeTheme() {
+    themeColor = _firebaseRemoteConfig.getThemeColorFromRemoteConfig();
+    notifyListeners();
+  }
+
+  /// Analytics
+  void _sendAnalyticsData(String name, Map<String, String>? parameters) async {
+    await FirebaseAnalyticsTracker().logEvent(name, parameters);
+  }
+
   void onNewPostTextChangedd(String description) {
     newPostDescription = description;
   }
@@ -47,9 +69,13 @@ class AddNewPostBloc extends ChangeNotifier {
     } else {
       isAddNewPostError = false;
       if (isInEditMode) {
-        return _editNewsFeedPost();
+        return _editNewsFeedPost().then((value) {
+          _sendAnalyticsData(
+              editPostAction, {postId: newFeedId?.toString() ?? ""});
+        });
       } else {
-        return _createNewNewsFeedPost();
+        return _createNewNewsFeedPost()
+            .then((value) => _sendAnalyticsData(addNewPostAction, null));
       }
     }
   }

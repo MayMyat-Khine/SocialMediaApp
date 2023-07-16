@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:social_media_app/analytics/firabase_analytics.dart';
 import 'package:social_media_app/data/vos/news_feed_vo.dart';
 import 'package:social_media_app/models/auth_model.dart';
 import 'package:social_media_app/models/auth_model_impl.dart';
@@ -18,7 +19,13 @@ class NewsfeedBloc extends ChangeNotifier {
         notifyListeners();
       }
     });
+    _sendAnalyticsData();
   }
+
+  void _sendAnalyticsData() async {
+    await FirebaseAnalyticsTracker().logEvent(homeScreenReached, null);
+  }
+
   Future<void> deletePost(String postId) {
     return _mSocialModel.deletePost(postId);
   }
