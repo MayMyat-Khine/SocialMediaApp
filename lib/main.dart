@@ -5,22 +5,16 @@ import 'package:social_media_app/fcm/fcm_service.dart';
 import 'package:social_media_app/models/auth_model_impl.dart';
 import 'package:social_media_app/pages/home_page.dart';
 import 'package:social_media_app/pages/login_page.dart';
+import 'package:firebase_installations/firebase_installations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   FCMService().listenForMessages();
-  // RealTimeDatabaseDataAgentImpl db = RealTimeDatabaseDataAgentImpl();
-  // db.getNewsFeed().listen((event) {
-  //   print(event);
-  // });
-  // // db.getNewsFeed().listen((newsFeedList) {
-  // //   print(newsFeedList.toString());
-  // //   // newsFeed = newsFeedList;
-  // //   // if (!isDisposed) {
-  // //   //   notifyListeners();
-  // //   // }
-  // // });
+  var firebaseInstallationId =
+      await FirebaseInstallations.id ?? 'Unknown installation id';
+  debugPrint("Firebase Installation id =====> $firebaseInstallationId");
+
   runApp(MyApp());
 }
 

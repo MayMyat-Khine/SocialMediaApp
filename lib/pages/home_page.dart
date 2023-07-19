@@ -47,6 +47,21 @@ class HomePage extends StatelessWidget {
           actions: [
             GestureDetector(
               onTap: () {
+                navigateToScreen(context, const MLKitTextRecognition());
+              },
+              child: Container(
+                margin: const EdgeInsets.only(
+                  right: MARGIN_LARGE,
+                ),
+                child: const Icon(
+                  Icons.account_circle,
+                  color: Colors.grey,
+                  size: MARGIN_LARGE,
+                ),
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
                 /// TODO : - Handle Search Here
               },
               child: Container(
